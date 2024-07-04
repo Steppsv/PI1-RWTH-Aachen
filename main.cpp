@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 #include "Student.h"
 
 int main()
@@ -29,6 +30,7 @@ int main()
                   << "(6): Datenelement vorne hinzufügen" << std::endl
 				  << "(7): Daten aus Datei herunterladen" << std::endl
 				  << "(8): Daten hochladen" << std::endl
+				  << "(9): Datenbank sortieren" << std::endl
 				  << "(0): Beenden" << std::endl;
         std::cin >> abfrage;
         std::cin.ignore(10, '\n');
@@ -117,25 +119,26 @@ int main()
             	    std::cout << "Welcher Student muss entfernt werden?\n";
             	    std::cin >> LMatNum;
 
-					for( long long unsigned int i = 0 ; i+1 < studentenVector.size()+1 ; i++)
-					{
-						if( studentenVector[i].getMatNr() == LMatNum)
-						{
-							//studentenVector.erase(studentenVector.begin());
-							studentenVector.erase(studentenVector.begin()+i);
-							std::cout << "Student ist entfernt" << std::endl;
-							break;
-						}
-						if( i == studentenVector.size()-1)
-						std::cout << "Dieser Student steht nicht auf der Liste" << std::endl;
-					}
+            	    auto it = std::find(studentenVector.begin(),studentenVector.end(),LMatNum);
+//            	    std::cout   << &(*studentenVector.begin())-1 << std::endl
+//            	    			<< &(*studentenVector.end()) << std::endl
+//								<< *it << std::endl;
+            	    if( it == studentenVector.end() )
+            	    	std::cout << "Dieser Student steht nicht auf der Liste" << std::endl;
+            	    else
+            	    {
+            	    	std::cout << "Student " << *it << " ist gelöscht";
+            	    	studentenVector.erase(it);
+            	    }
+
+
               	}
             	else
             	{
             	std::cout << "Die Liste ist leer!\n\n";
-            	}
-            	break;
-
+        	}
+            break;
+            //Datenelement vorne hinzufügen
             case '6':
             {
             	unsigned int matNr = 0;
@@ -162,7 +165,7 @@ int main()
             }
 
             	break;
-
+            // Herunterladung der Datei aus File studenten.txt
             case '7':
             {
             	studentenVector.clear();
@@ -186,7 +189,7 @@ int main()
 				std::cout << "Die Datei ist nun heruntergeladen" << std::endl;
             }
             	break;
-
+            // Hochgeladung der Datei in der File studenten.txt
             case '8':
             { //| std::ios::trunc
             	std::ofstream ausgabe("studenten.txt", std::ios::out | std::ios::trunc);
@@ -199,6 +202,17 @@ int main()
             	}
             	ausgabe.close();
             	std::cout << "Die Datei ist nun hochgeladen" << std::endl;
+            }
+            	break;
+            //Sortierung des Datenbanks mit funktion std::sort
+            case '9':
+            {
+            	std::sort(studentenVector.begin(),studentenVector.end());
+            	std::cout << "Die Aussortierte Liste: \n\n";
+            	for( long long unsigned int i = 0; i < studentenVector.size() ; i++)
+            		{
+            			std::cout << studentenVector[i];
+            		}
             }
             	break;
 

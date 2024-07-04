@@ -72,3 +72,30 @@ void Student::ausgabe() const
               << geburtstag << ", wohnhaft in " << adresse
               << std::endl;
 }
+
+bool Student::operator ==(const Student & other) const
+{
+	return this->matNr == other.matNr;
+}
+
+bool Student::operator==(unsigned int num) const
+{
+	return this->matNr == num;
+}
+
+bool Student::operator >(const Student & other) const
+{
+	return this->matNr > other.matNr;
+}
+
+bool Student::operator <(const Student & other) const
+{
+	return this->matNr < other.matNr;
+}
+
+std::ostream& operator<<(std::ostream& out, const Student& student) {
+    out << student.name << ", MatNr. " << student.matNr << ", geb. am "
+            << student.geburtstag << ", wohnhaft in " << student.adresse
+            << std::endl;
+    return out;
+}
