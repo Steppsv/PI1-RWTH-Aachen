@@ -1,39 +1,21 @@
 /** @mainpage
  *
  * Praktikum Informatik 1 MMXXIV <BR>
- * Versuch 5: Dynamische Datenstrukturen
+ * Versuch6: Dynamische Datenstrukturen , Vector
  *
  */
 
 #include <iostream>
 #include <string>
-
-#include "Liste.h"
+#include <vector>
+#include <fstream>
 #include "Student.h"
 
 int main()
 {
-    Liste studentenListe;
+	std::vector<Student> studentenVector;
     Student student;
-
     char abfrage;
-    std::cout << "Wollen Sie die Liste selbst fuellen? (j)/(n) ";
-    std::cin >> abfrage;
-    std::cin.ignore(10, '\n');
-
-    if (abfrage != 'j')
-    {
-        student = Student(34567, "Harro Simoneit", "19.06.1971", "Am Markt 1");
-        studentenListe.pushBack(student);
-        student = Student(74567, "Vera Schmitt", "23.07.1982", "Gartenstr. 23");
-        studentenListe.pushBack(student);
-        student = Student(12345, "Siggi Baumeister", "23.04.1983", "Ahornst.55");
-        studentenListe.pushBack(student);
-        student = Student(64567, "Paula Peters", "9.01.1981", "Weidenweg 12");
-        studentenListe.pushBack(student);
-        student = Student(23456, "Walter Rodenstock", "15.10.1963", "W�llnerstr.9");
-        studentenListe.pushBack(student);
-    }
 
     do
     {
@@ -45,6 +27,8 @@ int main()
 				  << "(4): Datenbank ausgeben B->F" << std::endl
 				  << "(5): Datenelement nach Matrukelnummer löschen" << std::endl
                   << "(6): Datenelement vorne hinzufügen" << std::endl
+				  << "(7): Daten aus Datei herunterladen" << std::endl
+				  << "(8): Daten hochladen" << std::endl
 				  << "(0): Beenden" << std::endl;
         std::cin >> abfrage;
         std::cin.ignore(10, '\n');
@@ -74,19 +58,19 @@ int main()
 
                     student = Student(matNr, name, geburtstag, adresse);
 
-                    studentenListe.pushBack(student);
+                    studentenVector.push_back(student);
                 }
                 break;
 
             // Datenelement vorne entfernen
             case '2':
                 {
-                    if(!studentenListe.empty())
+                    if(!studentenVector.empty())
                     {
-                        student = studentenListe.dataFront();
+                        student = studentenVector[0];
                         std::cout << "Der folgende Student ist geloescht worden:" << std::endl;
                         student.ausgabe();
-                        studentenListe.popFront();
+                        studentenVector.erase(studentenVector.begin());
                     }
                     else
                     {
@@ -97,36 +81,54 @@ int main()
 
             // Datenbank vorwaerts ausgeben
             case '3':
-                if(!studentenListe.empty())
+                if(!studentenVector.empty())
                 {
                     std::cout << "Inhalt der Liste in fortlaufender Reihenfolge:" << std::endl;
-                    studentenListe.ausgabeVorwaerts();
+                    for(long long unsigned int i = 0 ; i < studentenVector.size() ; i++)
+                    {
+                    	studentenVector[i].ausgabe();
+                    }
                 }
                 else
                 {
                     std::cout << "Die Liste ist leer!\n\n";
                 }
                 break;
-
+            // Datenbank B->F ausgebben
             case '4':
-            	if(!studentenListe.empty())
-            	{
-                    std::cout << "Inhalt der Liste in rucklaufender Reihenfolge:" << std::endl;
-                    studentenListe.ausgabeBackwaerts();
-            	}
-            	else
-            	{
-                    std::cout << "Die Liste ist leer!\n\n";
+            	if(!studentenVector.empty())
+				{
+					std::cout << "Inhalt der Liste in fortlaufender Reihenfolge:" << std::endl;
+					for( int i = studentenVector.size()-1 ; i >= 0 ; i--)
+					{
+						studentenVector[i].ausgabe();
+					}
+				}
+				else
+				{
+            	    std::cout << "Die Liste ist leer!\n\n";
             	}
             	break;
-
+            //Datenelement nach Matnr löschen
             case '5':
-            	if(!studentenListe.empty())
+            	if(!studentenVector.empty())
             	{
-            	    int LMatNum = 0;
+            	    unsigned int LMatNum = 0;
             	    std::cout << "Welcher Student muss entfernt werden?\n";
             	    std::cin >> LMatNum;
-            	    studentenListe.datenElementLoschen(LMatNum);
+
+					for( long long unsigned int i = 0 ; i+1 < studentenVector.size()+1 ; i++)
+					{
+						if( studentenVector[i].getMatNr() == LMatNum)
+						{
+							//studentenVector.erase(studentenVector.begin());
+							studentenVector.erase(studentenVector.begin()+i);
+							std::cout << "Student ist entfernt" << std::endl;
+							break;
+						}
+						if( i == studentenVector.size()-1)
+						std::cout << "Dieser Student steht nicht auf der Liste" << std::endl;
+					}
               	}
             	else
             	{
@@ -155,10 +157,49 @@ int main()
             	std::cin.ignore(10, '\n');
 
             	student = Student(matNr, name, geburtstag, adresse);
-
-            	studentenListe.pushFront(student);
+            	studentenVector.push_back(student);
+            	//studentenVector.insert(studentenVector.begin(),student);
             }
 
+            	break;
+
+            case '7':
+            {
+            	studentenVector.clear();
+
+            	unsigned int matNr = 0;
+				std::string name = "";
+				std::string geburtstag = "";
+				std::string adresse = "";
+            	std::ifstream eingabe("studenten.txt");
+            	//int i = 0;
+				while(eingabe.peek() != EOF){
+					eingabe >> matNr;
+					eingabe.ignore(1 , '\n');
+					std::getline(eingabe, name);
+					std::getline(eingabe, geburtstag);
+					std::getline(eingabe, adresse);
+					student = Student(matNr, name, geburtstag, adresse);
+
+					studentenVector.push_back(student);
+				}
+				std::cout << "Die Datei ist nun heruntergeladen" << std::endl;
+            }
+            	break;
+
+            case '8':
+            { //| std::ios::trunc
+            	std::ofstream ausgabe("studenten.txt", std::ios::out | std::ios::trunc);
+            	for(long long unsigned int i = 0 ; i < studentenVector.size(); i++)
+            	{
+            		ausgabe << studentenVector[i].getMatNr() << std::endl;
+            		ausgabe << studentenVector[i].getName() << std::endl;
+            		ausgabe << studentenVector[i].getGeburtstag() << std::endl;
+            		ausgabe << studentenVector[i].getAdresse() << std::endl;
+            	}
+            	ausgabe.close();
+            	std::cout << "Die Datei ist nun hochgeladen" << std::endl;
+            }
             	break;
 
             case '0':
