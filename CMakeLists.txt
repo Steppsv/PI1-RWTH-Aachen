@@ -32,6 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mapionrw.h mapionrw.cpp
         dijkstra.h dijkstra.cpp
         dialog_dijkstraein.h dialog_dijkstraein.cpp dialog_dijkstraein.ui
+        dialogaddstreet.h dialogaddstreet.cpp dialogaddstreet.ui
 
 
     )

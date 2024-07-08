@@ -6,6 +6,7 @@
 #include "dialogaddcity.h"
 #include "dialog_dijkstraein.h"
 #include "dijkstra.h"
+#include "dialogaddstreet.h"
 #include <QString>
 #include <QDebug>
 #include <QRandomGenerator>
@@ -167,10 +168,20 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
 void MainWindow::on_pushButton_addCity_clicked()
 {
     DialogAddCity dialog(this);
+L1:
     if(dialog.exec() == QDialog::Accepted)
     {
         qDebug() << "Dialog accepted! ";
         City* neu_city = dialog.City_erstellen();
+        if(neu_city->Get_X() == 6666)
+        {
+            qDebug() << "Falsche eingabe! ";
+goto L1;
+
+            // dialog.exec();
+            // neu_city = dialog.City_erstellen();
+        }
+
         if(neu_city)
         {
             map1.addCity(neu_city);
@@ -297,6 +308,22 @@ void MainWindow::on_pushButton_clicked()
     else
     {
         qDebug() << "Dialog rejected";
+    }
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    DialogAddStreet dialog(this);
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        qDebug() << "Dialog accepted! ";
+        Street* neu_street = dialog.Street_erstellen(map1);
+        if(neu_street)
+        {
+            map1.addStreet(neu_street);
+            neu_street->draw(*scene);
+        }
     }
 }
 
